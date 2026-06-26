@@ -1,0 +1,137 @@
+<Window x:Class="TodoReminder.App.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="设置" Width="500" Height="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False">
+    <Grid Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="140"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Category Navigation -->
+        <Border Grid.Column="0" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0"
+                Background="#F5F5F5">
+            <ListBox x:Name="CategoryList" BorderThickness="0" Background="Transparent"
+                     SelectionChanged="OnCategoryChanged">
+                <ListBoxItem Padding="16,10" FontSize="14">快捷键</ListBoxItem>
+                <ListBoxItem Padding="16,10" FontSize="14">窗口</ListBoxItem>
+                <ListBoxItem Padding="16,10" FontSize="14">提醒</ListBoxItem>
+                <ListBoxItem Padding="16,10" FontSize="14">定时弹出</ListBoxItem>
+                <ListBoxItem Padding="16,10" FontSize="14">数据</ListBoxItem>
+                <ListBoxItem Padding="16,10" FontSize="14">启动</ListBoxItem>
+            </ListBox>
+        </Border>
+
+        <!-- Right: Content Area -->
+        <Grid Grid.Column="1" Margin="16">
+            <!-- 快捷键 -->
+            <StackPanel x:Name="PanelHotkey" Visibility="Visible">
+                <TextBlock Text="快捷键" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <CheckBox x:Name="HotkeyEnabled" Content="启用全局快捷键" FontSize="14" Margin="0,0,0,12"/>
+                <TextBlock Text="快捷键 (点击下方后按下组合键)" FontSize="13" Foreground="#888" Margin="0,0,0,4"/>
+                <Button x:Name="HotkeyButton" Content="Ctrl+Alt+Space"
+                        FontSize="14" Height="32" Padding="6,4"
+                        HorizontalContentAlignment="Left"
+                        Background="#F0F0F0" BorderBrush="#CCC"
+                        Cursor="Hand"
+                        Click="HotkeyButton_Click"/>
+            </StackPanel>
+
+            <!-- 窗口 -->
+            <StackPanel x:Name="PanelWindow" Visibility="Collapsed">
+                <TextBlock Text="窗口" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <CheckBox x:Name="WindowTopmost" Content="窗口置顶" FontSize="14" Margin="0,0,0,12"/>
+                <CheckBox x:Name="WindowStartHidden" Content="启动时隐藏" FontSize="14" Margin="0,0,0,12"/>
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="宽度" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBox x:Name="WindowWidth" Grid.Column="1" FontSize="14" Height="28" Margin="4,0"/>
+                    <TextBlock Grid.Column="2" Text="×" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="3" Text="高度" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBox x:Name="WindowHeight" Grid.Column="4" FontSize="14" Height="28" Margin="4,0"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- 提醒 -->
+            <StackPanel x:Name="PanelReminder" Visibility="Collapsed">
+                <TextBlock Text="提醒" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <CheckBox x:Name="ReminderEnabled" Content="启用事项提醒" FontSize="14" Margin="0,0,0,12"/>
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="默认稍后提醒" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ReminderSnooze" Grid.Column="1" FontSize="14" Height="28" Margin="8,0"/>
+                    <TextBlock Grid.Column="2" Text="分钟" FontSize="13" VerticalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- 定时弹出 -->
+            <StackPanel x:Name="PanelSchedule" Visibility="Collapsed">
+                <TextBlock Text="定时弹出" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBlock Text="启用后到点自动显示主窗口" FontSize="12" Foreground="#888" Margin="0,0,0,12"/>
+
+                <ListBox x:Name="ScheduleList" Height="160"
+                         BorderThickness="1" BorderBrush="#DDD"
+                         SelectionMode="Single"
+                         DisplayMemberPath="DisplayText"
+                         Margin="0,0,0,8"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="+ 新增" Width="70" Height="28" FontSize="12"
+                            Click="OnAddSchedule" Margin="0,0,6,0"/>
+                    <Button Content="编辑" Width="70" Height="28" FontSize="12"
+                            Click="OnEditSchedule" Margin="0,0,6,0"/>
+                    <Button Content="删除" Width="70" Height="28" FontSize="12"
+                            Click="OnDeleteSchedule"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 数据 -->
+            <StackPanel x:Name="PanelData" Visibility="Collapsed">
+                <TextBlock Text="数据" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <TextBlock Text="数据库路径" FontSize="13" Foreground="#888" Margin="0,0,0,4"/>
+                <TextBlock x:Name="DbPath" FontSize="13" Padding="8,6"
+                           Background="#F0F0F0" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <Button Content="打开文件夹" Width="110" Height="30"
+                            Click="OnOpenDbFolder" Margin="0,0,8,0"/>
+                    <Button Content="备份数据库" Width="110" Height="30"
+                            Click="OnExportData" Margin="0,0,8,0"/>
+                    <Button Content="导入数据库" Width="110" Height="30"
+                            Click="OnImportData"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 启动 -->
+            <StackPanel x:Name="PanelStartup" Visibility="Collapsed">
+                <TextBlock Text="启动" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <CheckBox x:Name="StartupAutoStart" Content="开机自启动" FontSize="14" Margin="0,0,0,12"/>
+                <TextBlock Text="启用后应用随 Windows 自动启动。" FontSize="13" Foreground="#888"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Bottom: Save / Cancel -->
+        <Border Grid.ColumnSpan="2" VerticalAlignment="Bottom"
+                BorderBrush="#E0E0E0" BorderThickness="0,1,0,0"
+                Padding="0,10,16,10" Background="#FAFAFA">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="取消" Width="80" Height="32" Margin="0,0,8,0"
+                        IsCancel="True"/>
+                <Button Content="保存" Width="80" Height="32"
+                        Click="OnSave" IsDefault="True"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

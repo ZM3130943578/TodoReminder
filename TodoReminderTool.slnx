@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TodoReminder.App/TodoReminder.App.csproj" />
+    <Project Path="src/TodoReminder.Application/TodoReminder.Application.csproj" />
+    <Project Path="src/TodoReminder.Domain/TodoReminder.Domain.csproj" />
+    <Project Path="src/TodoReminder.Infrastructure/TodoReminder.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TodoReminder.Tests/TodoReminder.Tests.csproj" />
+  </Folder>
+</Solution>

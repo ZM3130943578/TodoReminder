@@ -1,0 +1,64 @@
+<Window x:Class="TodoReminder.App.Views.ScheduleRuleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="定时弹出规则" Width="380" Height="Auto"
+        SizeToContent="Height" ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <StackPanel Margin="16">
+        <TextBlock Text="规则名称" FontSize="13"/>
+        <TextBox x:Name="NameBox" FontSize="14" Height="30" Margin="0,4,0,12"/>
+
+        <TextBlock Text="启用" FontSize="13"/>
+        <CheckBox x:Name="EnabledCheck" IsChecked="True" Margin="0,4,0,12"/>
+
+        <TextBlock Text="弹出类型" FontSize="13"/>
+        <ComboBox x:Name="TypeCombo" FontSize="14" Height="30"
+                  SelectionChanged="OnTypeChanged" Margin="0,4,0,12">
+            <ComboBoxItem Content="单次弹出 (Once)"/>
+            <ComboBoxItem Content="每日弹出 (Daily)"/>
+            <ComboBoxItem Content="每周弹出 (Weekly)"/>
+            <ComboBoxItem Content="间隔弹出 (Interval)"/>
+        </ComboBox>
+
+        <StackPanel x:Name="TimeOfDayPanel" Visibility="Collapsed">
+            <TextBlock Text="弹出时间 (HH:mm)" FontSize="13"/>
+            <TextBox x:Name="TimeOfDayBox" FontSize="14" Height="30"
+                     Margin="0,4,0,12"/>
+        </StackPanel>
+
+        <StackPanel x:Name="OnceAtPanel" Visibility="Collapsed">
+            <TextBlock Text="单次弹出于 (yyyy-MM-dd HH:mm)" FontSize="13"/>
+            <TextBox x:Name="OnceAtBox" FontSize="14" Height="30"
+                     Margin="0,4,0,12"/>
+        </StackPanel>
+
+        <StackPanel x:Name="IntervalPanel" Visibility="Collapsed">
+            <TextBlock Text="间隔分钟数" FontSize="13"/>
+            <TextBox x:Name="IntervalBox" FontSize="14" Height="30"
+                     Margin="0,4,0,12"/>
+        </StackPanel>
+
+        <StackPanel x:Name="WeekdaysPanel" Visibility="Collapsed">
+            <TextBlock Text="星期 (0=周日,1=周一...6=周六, 逗号分隔)" FontSize="13"/>
+            <TextBox x:Name="WeekdaysBox" FontSize="14" Height="30"
+                     Text="1,2,3,4,5" Margin="0,4,0,12"/>
+        </StackPanel>
+
+        <TextBlock Text="提示文案" FontSize="13"/>
+        <TextBox x:Name="MessageInput" FontSize="14" Height="30"
+                 Margin="0,4,0,16"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Content="取消" Width="80" Height="32"
+                    IsCancel="True" Margin="0,0,8,0"/>
+            <Button Grid.Column="2" Content="确认" Width="80" Height="32"
+                    Click="OnConfirm" IsDefault="True"/>
+        </Grid>
+    </StackPanel>
+</Window>
