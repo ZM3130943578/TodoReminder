@@ -23,23 +23,25 @@
             <TextBlock Grid.Column="0" Text="今日待办"
                        FontSize="20" FontWeight="SemiBold"
                        VerticalAlignment="Center"/>
-            <Button Grid.Column="1" Content="历史"
-                    Command="{Binding OpenHistoryCommand}"
-                    Background="Transparent"
-                    BorderThickness="1"
-                    BorderBrush="#CCC"
-                    FontSize="13"
-                    Padding="8,4"
-                    Cursor="Hand"
-                    ToolTip="历史记录" Margin="0,0,8,0"/>
-            <Button Grid.Column="1" Content="⚙"
-                    Command="{Binding OpenSettingsCommand}"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontSize="18"
-                    Padding="8,4"
-                    Cursor="Hand"
-                    ToolTip="设置"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="历史"
+                        Command="{Binding OpenHistoryCommand}"
+                        Background="Transparent"
+                        BorderThickness="1"
+                        BorderBrush="#CCC"
+                        FontSize="13"
+                        Padding="8,4"
+                        Cursor="Hand"
+                        ToolTip="历史记录" Margin="0,0,8,0"/>
+                <Button Content="⚙"
+                        Command="{Binding OpenSettingsCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="18"
+                        Padding="8,4"
+                        Cursor="Hand"
+                        ToolTip="设置"/>
+            </StackPanel>
         </Grid>
 
         <Separator Grid.Row="0" VerticalAlignment="Bottom" Opacity="0.3"/>
