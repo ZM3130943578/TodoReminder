@@ -90,6 +90,7 @@ _viewModel.OnSettingsClosed = () =>
 
         _rolloverService = new DayRolloverService(repository);
         _ = _rolloverService.EnsureRolloverAsync();
+        _rolloverService.Start();
 
         _ = _viewModel.LoadItemsAsync();
 

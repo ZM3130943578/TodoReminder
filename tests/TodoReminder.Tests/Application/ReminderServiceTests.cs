@@ -15,7 +15,8 @@ public class ReminderServiceTests
         var records = new List<TodoDailyRecord>
         {
             new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
-                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null }
+                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null,
+                    CreatedAt = DateTime.UtcNow.Date }
         };
 
         var due = ReminderService.FindDueRecords(records, _today, _now);
@@ -122,14 +123,30 @@ public class ReminderServiceTests
     }
 
     [Fact]
+    public void FindDueRecords_ShouldSkipDueTimeBeforeCreation()
+    {
+        var records = new List<TodoDailyRecord>
+        {
+            new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
+                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null }
+        };
+
+        var due = ReminderService.FindDueRecords(records, _today, _now);
+
+        Assert.Empty(due);
+    }
+
+    [Fact]
     public void FindDueRecords_ShouldHandleMultipleDueItems()
     {
         var records = new List<TodoDailyRecord>
         {
             new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
-                    DueTime = _now.AddMinutes(-10), ReminderFiredAt = null },
+                    DueTime = _now.AddMinutes(-10), ReminderFiredAt = null,
+                    CreatedAt = DateTime.UtcNow.Date },
             new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
-                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null },
+                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null,
+                    CreatedAt = DateTime.UtcNow.Date },
             new() { RecordDate = _today, Status = TodoStatus.Completed, ReminderEnabled = true,
                     DueTime = _now.AddMinutes(-3), ReminderFiredAt = null }
         };
@@ -145,14 +162,15 @@ public class ReminderServiceTests
         var records = new List<TodoDailyRecord>
         {
             new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
-                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null, SortOrder = 2 },
+                    DueTime = _now.AddMinutes(-5), ReminderFiredAt = null, SortOrder = 2,
+                    CreatedAt = DateTime.UtcNow.Date },
             new() { RecordDate = _today, Status = TodoStatus.Pending, ReminderEnabled = true,
-                    DueTime = _now.AddMinutes(-10), ReminderFiredAt = null, SortOrder = 1 }
+                    DueTime = _now.AddMinutes(-10), ReminderFiredAt = null, SortOrder = 1,
+                    CreatedAt = DateTime.UtcNow.Date }
         };
 
         var due = ReminderService.FindDueRecords(records, _today, _now);
 
-        // Should maintain the order from the input list
         Assert.Equal(2, due.Count);
     }
 }

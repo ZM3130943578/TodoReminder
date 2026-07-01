@@ -77,6 +77,7 @@ public class ReminderService : IDisposable
             r.ReminderEnabled &&
             r.DueTime.HasValue &&
             r.DueTime.Value <= currentTime &&
+            r.DueTime.Value >= TimeOnly.FromDateTime(r.CreatedAt.ToLocalTime()) &&
             r.ReminderFiredAt == null
         ).ToList();
     }

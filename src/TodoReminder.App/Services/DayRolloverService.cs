@@ -1,3 +1,4 @@
+using System.Windows.Threading;
 using TodoReminder.Domain.Entities;
 using TodoReminder.Domain.Enums;
 using TodoReminder.Infrastructure.Repositories.Interfaces;
@@ -7,10 +8,29 @@ namespace TodoReminder.App.Services;
 public class DayRolloverService
 {
     private readonly ITodoRepository _repository;
+    private readonly DispatcherTimer _timer;
 
     public DayRolloverService(ITodoRepository repository)
     {
         _repository = repository;
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+        _timer.Tick += OnTimerTick;
+    }
+
+    public void Start() => _timer.Start();
+    public void Stop() => _timer.Stop();
+
+    private async void OnTimerTick(object? sender, EventArgs e)
+    {
+        _timer.Stop();
+        try
+        {
+            await EnsureRolloverAsync();
+        }
+        finally
+        {
+            _timer.Start();
+        }
     }
 
     public async Task EnsureRolloverAsync()
