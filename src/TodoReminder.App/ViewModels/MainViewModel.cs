@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TodoReminder.App.Services;
@@ -14,6 +15,7 @@ public partial class MainViewModel : ObservableObject
     private readonly ITodoService _todoService;
     private readonly AppSettingsService _settingsService;
     private readonly IPopupScheduleRepository _scheduleRepository;
+    private readonly DispatcherTimer _dayChangeTimer;
 
     [ObservableProperty]
     private DateOnly _currentDate;
@@ -37,6 +39,19 @@ public partial class MainViewModel : ObservableObject
         _settingsService = settingsService;
         _scheduleRepository = scheduleRepository;
         CurrentDate = DateOnly.FromDateTime(DateTime.Now);
+
+        _dayChangeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(30) };
+        _dayChangeTimer.Tick += OnDayChangeTick;
+        _dayChangeTimer.Start();
+    }
+
+    private void OnDayChangeTick(object? sender, EventArgs e)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        if (CurrentDate != today)
+        {
+            CurrentDate = today;
+        }
     }
 
     partial void OnCurrentDateChanged(DateOnly value)
