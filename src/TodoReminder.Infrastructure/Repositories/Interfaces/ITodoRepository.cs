@@ -16,4 +16,5 @@ public interface ITodoRepository
     Task DeleteRecordAsync(Guid id);
     Task<List<TodoDailyRecord>> GetPendingRecordsBeforeDateAsync(DateOnly date);
     Task<DateOnly?> GetMostRecentRecordDateAsync(DateOnly before);
+    Task<List<TodoDailyRecord>> GetCompletedRecordsAsync();
 }

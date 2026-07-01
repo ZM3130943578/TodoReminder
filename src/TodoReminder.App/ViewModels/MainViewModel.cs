@@ -194,4 +194,12 @@ public partial class MainViewModel : ObservableObject
         window.ShowDialog();
         OnSettingsClosed?.Invoke();
     }
+
+    [RelayCommand]
+    private async Task OpenHistory()
+    {
+        var items = await _todoService.GetHistoryAsync();
+        var window = new HistoryWindow(items);
+        window.ShowDialog();
+    }
 }

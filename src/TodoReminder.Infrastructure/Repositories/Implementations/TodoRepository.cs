@@ -90,6 +90,14 @@ public class TodoRepository : ITodoRepository
             .ToListAsync();
     }
 
+    public async Task<List<TodoDailyRecord>> GetCompletedRecordsAsync()
+    {
+        return await _context.TodoDailyRecords
+            .Where(r => r.Status == TodoStatus.Completed || r.Status == TodoStatus.Abandoned)
+            .OrderByDescending(r => r.CompletedAt ?? r.AbandonedAt)
+            .ToListAsync();
+    }
+
     public async Task<DateOnly?> GetMostRecentRecordDateAsync(DateOnly before)
     {
         var dates = await _context.TodoDailyRecords

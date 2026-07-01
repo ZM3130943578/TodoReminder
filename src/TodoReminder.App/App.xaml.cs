@@ -244,6 +244,10 @@ _viewModel.OnSettingsClosed = () =>
         addItem.Click += (_, _) => ShowWindowAndAdd();
         menu.Items.Add(addItem);
 
+        var historyItem = new MenuItem { Header = "历史记录" };
+        historyItem.Click += (_, _) => OpenHistoryWindow();
+        menu.Items.Add(historyItem);
+
         menu.Items.Add(new Separator());
 
         var settingsItem = new MenuItem { Header = "设置" };
@@ -272,6 +276,16 @@ _viewModel.OnSettingsClosed = () =>
         if (_dbContext == null || _viewModel == null) return;
         var repository = new TodoRepository(_dbContext);
         var window = new DebugWindow(_reminderService!, _scheduleService!, _rolloverService!, repository, _viewModel);
+        window.ShowDialog();
+    }
+
+    private async void OpenHistoryWindow()
+    {
+        if (_dbContext == null) return;
+        var repository = new TodoRepository(_dbContext);
+        var todoService = new TodoService(repository);
+        var items = await todoService.GetHistoryAsync();
+        var window = new HistoryWindow(items);
         window.ShowDialog();
     }
 

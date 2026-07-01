@@ -102,6 +102,34 @@ public class TodoService : ITodoService
         await _repository.UpdateRecordAsync(record);
     }
 
+    public async Task<List<HistoryItemDto>> GetHistoryAsync()
+    {
+        var records = await _repository.GetCompletedRecordsAsync();
+        var taskIds = records.Select(r => r.TaskId).Distinct().ToArray();
+        var tasks = new Dictionary<Guid, TodoTask>();
+        foreach (var taskId in taskIds)
+        {
+            var task = await _repository.GetTaskByIdAsync(taskId);
+            if (task != null)
+                tasks[task.Id] = task;
+        }
+        return records.Select(r => MapToHistory(r, tasks.GetValueOrDefault(r.TaskId))).ToList();
+    }
+
+    private static HistoryItemDto MapToHistory(TodoDailyRecord record, TodoTask? task)
+    {
+        return new HistoryItemDto
+        {
+            RecordId = record.Id,
+            Title = task?.Title ?? string.Empty,
+            Note = task?.Note,
+            RecordDate = record.RecordDate,
+            Status = record.Status,
+            CompletedAt = record.CompletedAt,
+            AbandonedAt = record.AbandonedAt
+        };
+    }
+
     private static TodoItemDto MapToDto(TodoDailyRecord record, TodoTask? task)
     {
         return new TodoItemDto
