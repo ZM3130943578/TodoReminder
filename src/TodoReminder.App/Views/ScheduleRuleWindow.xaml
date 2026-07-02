@@ -22,15 +22,22 @@
         </ComboBox>
 
         <StackPanel x:Name="TimeOfDayPanel" Visibility="Collapsed">
-            <TextBlock Text="弹出时间 (HH:mm)" FontSize="13"/>
-            <TextBox x:Name="TimeOfDayBox" FontSize="14" Height="30"
-                     Margin="0,4,0,12"/>
+            <TextBlock Text="弹出时间" FontSize="13"/>
+            <WrapPanel Margin="0,4,0,12">
+                <ComboBox x:Name="TodHourCombo" Width="60" Height="30"/>
+                <TextBlock Text=" : " FontSize="14" VerticalAlignment="Center"/>
+                <ComboBox x:Name="TodMinuteCombo" Width="60" Height="30"/>
+            </WrapPanel>
         </StackPanel>
 
         <StackPanel x:Name="OnceAtPanel" Visibility="Collapsed">
-            <TextBlock Text="单次弹出于 (yyyy-MM-dd HH:mm)" FontSize="13"/>
-            <TextBox x:Name="OnceAtBox" FontSize="14" Height="30"
-                     Margin="0,4,0,12"/>
+            <TextBlock Text="单次弹出于" FontSize="13"/>
+            <WrapPanel Margin="0,4,0,12">
+                <DatePicker x:Name="OnceDatePicker" Width="120" Height="30"/>
+                <ComboBox x:Name="OnceHourCombo" Width="60" Height="30" Margin="8,0,0,0"/>
+                <TextBlock Text=" : " FontSize="14" VerticalAlignment="Center"/>
+                <ComboBox x:Name="OnceMinuteCombo" Width="60" Height="30"/>
+            </WrapPanel>
         </StackPanel>
 
         <StackPanel x:Name="IntervalPanel" Visibility="Collapsed">

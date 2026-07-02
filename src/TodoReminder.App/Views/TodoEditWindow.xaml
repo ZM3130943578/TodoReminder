@@ -11,8 +11,13 @@
         <TextBlock Text="备注" FontSize="13" Margin="0,0,0,4"/>
         <TextBox x:Name="NoteBox" FontSize="14" Height="60"
                  TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,8"/>
-        <TextBlock Text="提醒时间 (HH:mm，可选)" FontSize="13" Margin="0,0,0,4"/>
-        <TextBox x:Name="TimeBox" FontSize="14" Height="30" Margin="0,0,0,8"/>
+        <TextBlock Text="提醒时间" FontSize="13" Margin="0,0,0,4"/>
+        <WrapPanel Margin="0,0,0,8">
+            <CheckBox x:Name="TimeEnabledCheck" Content="启用" VerticalAlignment="Center" Margin="0,0,8,0" Checked="OnTimeEnabledChanged" Unchecked="OnTimeEnabledChanged"/>
+            <ComboBox x:Name="HourCombo" Width="60" Height="30" IsEnabled="False"/>
+            <TextBlock Text=" : " FontSize="14" VerticalAlignment="Center"/>
+            <ComboBox x:Name="MinuteCombo" Width="60" Height="30" IsEnabled="False"/>
+        </WrapPanel>
         <Grid Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

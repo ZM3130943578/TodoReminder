@@ -51,9 +51,11 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0"
-                                           Text="{Binding RecordDateDisplay, StringFormat='日期: {0}'}"
                                            FontSize="11" Foreground="#AAA"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center">
+                        <Run Text="日期: "/>
+                        <Run Text="{Binding RecordDateDisplay}"/>
+                    </TextBlock>
                                 <TextBlock Grid.Column="1"
                                            Text="{Binding Note}"
                                            FontSize="11" Foreground="#AAA"

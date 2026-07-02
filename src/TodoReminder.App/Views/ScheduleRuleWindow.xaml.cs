@@ -14,6 +14,16 @@ public partial class ScheduleRuleWindow : Window
         InitializeComponent();
         Owner = System.Windows.Application.Current.MainWindow;
         TypeCombo.SelectedIndex = 0;
+        for (int i = 0; i < 24; i++)
+        {
+            TodHourCombo.Items.Add(i.ToString("D2"));
+            OnceHourCombo.Items.Add(i.ToString("D2"));
+        }
+        for (int i = 0; i < 60; i++)
+        {
+            TodMinuteCombo.Items.Add(i.ToString("D2"));
+            OnceMinuteCombo.Items.Add(i.ToString("D2"));
+        }
     }
 
     public void SetForEdit(PopupSchedule schedule)
@@ -31,8 +41,17 @@ public partial class ScheduleRuleWindow : Window
             _ => 0
         };
 
-        TimeOfDayBox.Text = schedule.TimeOfDay?.ToString("HH:mm") ?? "";
-        OnceAtBox.Text = schedule.OnceAt?.ToString("yyyy-MM-dd HH:mm") ?? "";
+        if (schedule.TimeOfDay.HasValue)
+        {
+            TodHourCombo.SelectedValue = schedule.TimeOfDay.Value.Hour.ToString("D2");
+            TodMinuteCombo.SelectedValue = schedule.TimeOfDay.Value.Minute.ToString("D2");
+        }
+        if (schedule.OnceAt.HasValue)
+        {
+            OnceDatePicker.SelectedDate = schedule.OnceAt.Value;
+            OnceHourCombo.SelectedValue = schedule.OnceAt.Value.Hour.ToString("D2");
+            OnceMinuteCombo.SelectedValue = schedule.OnceAt.Value.Minute.ToString("D2");
+        }
         IntervalBox.Text = schedule.IntervalMinutes?.ToString() ?? "";
         WeekdaysBox.Text = schedule.Weekdays ?? "";
         MessageInput.Text = schedule.Message;
@@ -88,13 +107,22 @@ public partial class ScheduleRuleWindow : Window
         switch (TypeCombo.SelectedIndex)
         {
             case 0:
-                if (DateTime.TryParse(OnceAtBox.Text.Trim(), out var onceAt))
-                    s.OnceAt = onceAt;
+                if (OnceDatePicker.SelectedDate.HasValue && OnceHourCombo.SelectedItem != null && OnceMinuteCombo.SelectedItem != null)
+                {
+                    var date = DateOnly.FromDateTime(OnceDatePicker.SelectedDate.Value);
+                    var hour = int.Parse((string)OnceHourCombo.SelectedItem);
+                    var minute = int.Parse((string)OnceMinuteCombo.SelectedItem);
+                    s.OnceAt = date.ToDateTime(new TimeOnly(hour, minute));
+                }
                 break;
             case 1:
             case 2:
-                if (TimeOnly.TryParse(TimeOfDayBox.Text.Trim(), out var tod))
-                    s.TimeOfDay = tod;
+                if (TodHourCombo.SelectedItem != null && TodMinuteCombo.SelectedItem != null)
+                {
+                    var hour = int.Parse((string)TodHourCombo.SelectedItem);
+                    var minute = int.Parse((string)TodMinuteCombo.SelectedItem);
+                    s.TimeOfDay = new TimeOnly(hour, minute);
+                }
                 if (TypeCombo.SelectedIndex == 2)
                     s.Weekdays = WeekdaysBox.Text.Trim();
                 break;

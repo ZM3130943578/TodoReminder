@@ -158,4 +158,47 @@ public class TodoServiceIntegrationTests : IDisposable
         var items4 = await _service.GetTodosByDateAsync(new DateOnly(2026, 6, 25));
         Assert.Equal(TodoStatus.Pending, items4.First().Status);
     }
+
+    [Fact]
+    public async Task GetHistoryAsync_ShouldReturnCompletedAndAbandonedRecords()
+    {
+        var dto1 = await _service.CreateTodoAsync("已完成事项", null, new DateOnly(2026, 6, 25), null);
+        var dto2 = await _service.CreateTodoAsync("已废弃事项", null, new DateOnly(2026, 6, 25), null);
+        var dto3 = await _service.CreateTodoAsync("待办事项", null, new DateOnly(2026, 6, 25), null);
+
+        await _service.CompleteTodoAsync(dto1.Id);
+        await _service.AbandonTodoAsync(dto2.Id);
+
+        var history = await _service.GetHistoryAsync();
+
+        Assert.Equal(2, history.Count);
+        Assert.Contains(history, h => h.Title == "已完成事项" && h.Status == TodoStatus.Completed);
+        Assert.Contains(history, h => h.Title == "已废弃事项" && h.Status == TodoStatus.Abandoned);
+
+        // Verify StatusTimeDisplay does not throw
+        foreach (var item in history)
+        {
+            var display = item.StatusTimeDisplay;
+            var statusDisp = item.StatusDisplay;
+            Assert.False(string.IsNullOrEmpty(display));
+            Assert.False(string.IsNullOrEmpty(statusDisp));
+        }
+    }
+
+    [Fact]
+    public async Task GetHistoryAsync_ShouldBeOrderedByCompletionTimeDesc()
+    {
+        var dto1 = await _service.CreateTodoAsync("先完成", null, new DateOnly(2026, 6, 25), null);
+        var dto2 = await _service.CreateTodoAsync("后完成", null, new DateOnly(2026, 6, 25), null);
+
+        await _service.CompleteTodoAsync(dto1.Id);
+        await Task.Delay(10);
+        await _service.CompleteTodoAsync(dto2.Id);
+
+        var history = await _service.GetHistoryAsync();
+
+        Assert.Equal(2, history.Count);
+        Assert.Equal("后完成", history[0].Title);
+        Assert.Equal("先完成", history[1].Title);
+    }
 }
