@@ -279,24 +279,14 @@ _viewModel.OnSettingsClosed = () =>
         window.ShowDialog();
     }
 
-    private async void OpenHistoryWindow()
+    private void OpenHistoryWindow()
     {
-        try
-        {
-            if (_dbContext == null) return;
-            var repository = new TodoRepository(_dbContext);
-            var todoService = new TodoService(repository);
-            var items = await todoService.GetHistoryAsync();
-            var window = new HistoryWindow(items);
-            window.Owner = _mainWindow;
-            window.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "打开历史记录失败");
-            System.Windows.MessageBox.Show($"打开历史记录失败：{ex.Message}",
-                "错误", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-        }
+        if (_dbContext == null) return;
+        var repository = new TodoRepository(_dbContext);
+        var todoService = new TodoService(repository);
+        var window = new HistoryWindow(todoService);
+        window.Owner = _mainWindow;
+        window.ShowDialog();
     }
 
     private void OpenSettingsWindow()

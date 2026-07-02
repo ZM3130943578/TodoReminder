@@ -102,9 +102,9 @@ public class TodoService : ITodoService
         await _repository.UpdateRecordAsync(record);
     }
 
-    public async Task<List<HistoryItemDto>> GetHistoryAsync()
+    public async Task<List<HistoryItemDto>> GetHistoryAsync(DateOnly? fromDate = null, DateOnly? toDate = null)
     {
-        var records = await _repository.GetCompletedRecordsAsync();
+        var records = await _repository.GetCompletedRecordsAsync(fromDate, toDate);
         var taskIds = records.Select(r => r.TaskId).Distinct().ToArray();
         var tasks = new Dictionary<Guid, TodoTask>();
         foreach (var taskId in taskIds)
@@ -126,7 +126,8 @@ public class TodoService : ITodoService
             RecordDate = record.RecordDate,
             Status = record.Status,
             CompletedAt = record.CompletedAt,
-            AbandonedAt = record.AbandonedAt
+            AbandonedAt = record.AbandonedAt,
+            CreatedAt = record.CreatedAt
         };
     }
 

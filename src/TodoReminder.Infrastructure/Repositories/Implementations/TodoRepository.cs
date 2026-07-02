@@ -90,10 +90,23 @@ public class TodoRepository : ITodoRepository
             .ToListAsync();
     }
 
-    public async Task<List<TodoDailyRecord>> GetCompletedRecordsAsync()
+    public async Task<List<TodoDailyRecord>> GetCompletedRecordsAsync(DateOnly? fromDate = null, DateOnly? toDate = null)
     {
-        return await _context.TodoDailyRecords
-            .Where(r => r.Status == TodoStatus.Completed || r.Status == TodoStatus.Abandoned)
+        var query = _context.TodoDailyRecords
+            .Where(r => r.Status == TodoStatus.Completed || r.Status == TodoStatus.Abandoned);
+
+        if (fromDate.HasValue)
+        {
+            var from = fromDate.Value.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+            query = query.Where(r => (r.CompletedAt ?? r.AbandonedAt) >= from);
+        }
+        if (toDate.HasValue)
+        {
+            var to = toDate.Value.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc);
+            query = query.Where(r => (r.CompletedAt ?? r.AbandonedAt) <= to);
+        }
+
+        return await query
             .OrderByDescending(r => r.CompletedAt ?? r.AbandonedAt)
             .ToListAsync();
     }

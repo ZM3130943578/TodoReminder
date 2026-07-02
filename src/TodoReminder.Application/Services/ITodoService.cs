@@ -11,7 +11,7 @@ public interface ITodoService
     Task CompleteTodoAsync(Guid recordId);
     Task AbandonTodoAsync(Guid recordId);
     Task RestoreTodoAsync(Guid recordId);
-    Task<List<HistoryItemDto>> GetHistoryAsync();
+    Task<List<HistoryItemDto>> GetHistoryAsync(DateOnly? fromDate = null, DateOnly? toDate = null);
 }
 
 public class TodoItemDto
@@ -37,6 +37,7 @@ public class HistoryItemDto
     public TodoStatus Status { get; set; }
     public DateTime? CompletedAt { get; set; }
     public DateTime? AbandonedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     public DateTime StatusTime => (CompletedAt ?? AbandonedAt ?? DateTime.MinValue).ToLocalTime();
     public string StatusDisplay => Status switch
     {
@@ -46,4 +47,6 @@ public class HistoryItemDto
     };
     public string StatusTimeDisplay => StatusTime.ToString("yyyy-MM-dd HH:mm:ss");
     public string RecordDateDisplay => RecordDate.ToString("yyyy-MM-dd");
+    public string CreatedAtDisplay => CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+    public string StatusLabel => Status == TodoStatus.Completed ? "完成时间" : "废弃时间";
 }

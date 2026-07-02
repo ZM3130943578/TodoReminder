@@ -196,19 +196,10 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task OpenHistory()
+    private void OpenHistory()
     {
-        try
-        {
-            var items = await _todoService.GetHistoryAsync();
-            var window = new HistoryWindow(items);
-            window.Owner = System.Windows.Application.Current.MainWindow;
-            window.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            System.Windows.MessageBox.Show($"打开历史记录失败：{ex.Message}\n\n{ex}",
-                "错误", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-        }
+        var window = new HistoryWindow(_todoService);
+        window.Owner = System.Windows.Application.Current.MainWindow;
+        window.ShowDialog();
     }
 }

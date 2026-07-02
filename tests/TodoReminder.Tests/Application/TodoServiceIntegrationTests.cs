@@ -201,4 +201,20 @@ public class TodoServiceIntegrationTests : IDisposable
         Assert.Equal("后完成", history[0].Title);
         Assert.Equal("先完成", history[1].Title);
     }
+
+    [Fact]
+    public async Task GetHistoryAsync_WithDateFilter_ShouldFilterCorrectly()
+    {
+        var dto1 = await _service.CreateTodoAsync("事项A", null, new DateOnly(2026, 6, 25), null);
+        var dto2 = await _service.CreateTodoAsync("事项B", null, new DateOnly(2026, 6, 25), null);
+
+        await _service.CompleteTodoAsync(dto1.Id);
+        await _service.CompleteTodoAsync(dto2.Id);
+
+        var all = await _service.GetHistoryAsync();
+        var filtered = await _service.GetHistoryAsync(new DateOnly(2025, 1, 1), new DateOnly(2025, 12, 31));
+
+        Assert.Equal(2, all.Count);
+        Assert.Empty(filtered);
+    }
 }
