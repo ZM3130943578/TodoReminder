@@ -10,6 +10,8 @@ public class DayRolloverService
     private readonly ITodoRepository _repository;
     private readonly DispatcherTimer _timer;
 
+    public event EventHandler? RolloverCompleted;
+
     public DayRolloverService(ITodoRepository repository)
     {
         _repository = repository;
@@ -25,7 +27,9 @@ public class DayRolloverService
         _timer.Stop();
         try
         {
-            await EnsureRolloverAsync();
+            var rolled = await EnsureRolloverAsync();
+            if (rolled)
+                RolloverCompleted?.Invoke(this, EventArgs.Empty);
         }
         finally
         {
@@ -33,13 +37,13 @@ public class DayRolloverService
         }
     }
 
-    public async Task EnsureRolloverAsync()
+    public async Task<bool> EnsureRolloverAsync()
     {
         var today = DateOnly.FromDateTime(DateTime.Now);
         var lastDate = await _repository.GetMostRecentRecordDateAsync(today);
 
         if (lastDate == null || lastDate.Value >= today)
-            return;
+            return false;
 
         var pendingRecords = await _repository.GetRecordsByDateAsync(lastDate.Value);
         var pending = pendingRecords
@@ -47,7 +51,7 @@ public class DayRolloverService
             .ToList();
 
         if (pending.Count == 0)
-            return;
+            return false;
 
         var todayRecords = await _repository.GetRecordsByDateAsync(today);
         var todayTaskIds = todayRecords.Select(r => r.TaskId).ToHashSet();
@@ -71,5 +75,7 @@ public class DayRolloverService
 
             await _repository.AddRecordAsync(inherited);
         }
+
+        return true;
     }
 }

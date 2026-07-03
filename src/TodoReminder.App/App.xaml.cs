@@ -89,6 +89,12 @@ _viewModel.OnSettingsClosed = () =>
         _scheduleService.Start();
 
         _rolloverService = new DayRolloverService(repository);
+        _rolloverService.RolloverCompleted += async (_, _) =>
+        {
+            Log.Information("Rollover completed, reloading items");
+            if (_viewModel != null)
+                await _viewModel.LoadItemsAsync();
+        };
         _ = _rolloverService.EnsureRolloverAsync();
         _rolloverService.Start();
 
@@ -307,9 +313,17 @@ _viewModel.OnSettingsClosed = () =>
             ShowWindow();
     }
 
-    private void ShowWindow()
+    private async void ShowWindow()
     {
         if (_mainWindow == null) return;
+        if (_rolloverService != null)
+        {
+            var rolled = await _rolloverService.EnsureRolloverAsync();
+            if (rolled && _viewModel != null)
+                await _viewModel.LoadItemsAsync();
+        }
+        if (_viewModel != null && _viewModel.CurrentDate != DateOnly.FromDateTime(DateTime.Now))
+            await _viewModel.LoadItemsAsync();
         _mainWindow.Show();
         _mainWindow.Activate();
         _mainWindow.Topmost = true;
